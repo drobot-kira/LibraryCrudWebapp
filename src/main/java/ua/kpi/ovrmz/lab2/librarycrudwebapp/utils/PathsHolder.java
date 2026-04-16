@@ -1,9 +1,15 @@
-﻿package ua.kpi.ovrmz.lab2.librarycrudwebapp.utils;
+package ua.kpi.ovrmz.lab2.librarycrudwebapp.utils;
 
 public class PathsHolder {
-//    public static final String BASIC = "/Lab2Example_war";
-//    public static final String USERS = BASIC +  "/users";
-//    public static final String ADD_USER = USERS + "/addUser";
-//    public static final String EDIT_USER = USERS + "/editUser";
-//    public static final String DELETE_USER = USERS + "/delete";
+    public static final String BASIC = "/library-management-system";
+
+    public static final String LIBRARIES = BASIC + "/libraries";
+    public static final String ADD_LIBRARY = LIBRARIES + "/add";
+    public static final String EDIT_LIBRARY = LIBRARIES + "/edit";
+    public static final String DELETE_LIBRARY = LIBRARIES + "/delete";
+
+    public static final String BOOKS = BASIC + "/books";
+    public static final String ADD_BOOK = BOOKS + "/add";
+    public static final String EDIT_BOOK = BOOKS + "/edit";
+    public static final String DELETE_BOOK = BOOKS + "/delete";
 }
