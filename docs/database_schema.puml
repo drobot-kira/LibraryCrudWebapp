@@ -1,0 +1,19 @@
+﻿@startuml
+entity "libraries" as lib {
+  id : INT <<PK>> <<generated>>
+  --
+  name : VARCHAR(255)
+  foundation_year : INT
+}
+
+entity "books" as bk {
+  id : INT <<PK>> <<generated>>
+  --
+  title : VARCHAR(255)
+  author : VARCHAR(255)
+  library_id : INT <<FK>>
+}
+
+lib ||..o{ bk : "1 to many"
+
+@enduml

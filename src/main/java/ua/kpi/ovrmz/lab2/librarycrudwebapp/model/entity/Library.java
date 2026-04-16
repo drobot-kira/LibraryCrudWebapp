@@ -1,4 +1,4 @@
-﻿package ua.kpi.ovrmz.lab2.librarycrudwebapp.model.entity;
+package ua.kpi.ovrmz.lab2.librarycrudwebapp.model.entity;
 
 import java.util.Objects;
 
