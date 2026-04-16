@@ -30,6 +30,9 @@ public class JdbcLibraryDao extends AbstractJdbcDao<Library> implements LibraryD
         super(connection);
     }
 
+    static Library getLibraryFromResultSet(ResultSet resultSet) throws SQLException {
+        return new Library.Builder().setId(resultSet.getInt(ID)).setName(resultSet.getString(NAME)).setFoundationYear(resultSet.getInt(FOUNDATION_YEAR)).build();
+    }
 
     @Override
     protected String getSelectAllQuery() {
@@ -55,25 +58,26 @@ public class JdbcLibraryDao extends AbstractJdbcDao<Library> implements LibraryD
     protected Library getEntityFromResultSet(ResultSet resultSet) throws SQLException {
         return getLibraryFromResultSet(resultSet);
     }
-    static Library getLibraryFromResultSet(ResultSet resultSet) throws SQLException {
-        return new Library.Builder().setId(resultSet.getInt(ID)).setName(resultSet.getString(NAME)).setFoundationYear(resultSet.getInt(FOUNDATION_YEAR)).build();
-    }
+
     @Override
     protected void setIdForEntity(Library entity, int id) {
         entity.setId(id);
     }
+
     @Override
     protected void prepareStatementForInsert(PreparedStatement query, Library entity)
             throws SQLException {
-        query.setString(1 , entity.getName());
-        query.setInt(2 , entity.getFoundationYear());
+        query.setString(1, entity.getName());
+        query.setInt(2, entity.getFoundationYear());
     }
+
     @Override
     protected void prepareStatementForUpdate(PreparedStatement query, Library entity) throws SQLException {
         query.setString(1, entity.getName());
-        query.setInt(2 , entity.getFoundationYear());
-        query.setInt(3 , entity.getId());
+        query.setInt(2, entity.getFoundationYear());
+        query.setInt(3, entity.getId());
     }
+
     @Override
     protected String getSelectByIdQuery() {
         return SELECT_FROM_LIBRARIES + WHERE_ID;

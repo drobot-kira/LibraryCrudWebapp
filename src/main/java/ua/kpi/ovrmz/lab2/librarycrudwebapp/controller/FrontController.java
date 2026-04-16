@@ -11,6 +11,7 @@ import ua.kpi.ovrmz.lab2.librarycrudwebapp.controller.validator.RegExp;
 import ua.kpi.ovrmz.lab2.librarycrudwebapp.model.service.exception.ServiceException;
 import ua.kpi.ovrmz.lab2.librarycrudwebapp.utils.AttributesHolder;
 import ua.kpi.ovrmz.lab2.librarycrudwebapp.utils.ErrorsMessages;
+import ua.kpi.ovrmz.lab2.librarycrudwebapp.utils.PagesHolder;
 
 import java.io.IOException;
 
@@ -40,43 +41,52 @@ public class FrontController extends HttpServlet {
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String commandKey = getMethod(request) + CommandHolder.DELIMITER + getPath(request);
-        logger.debug(commandKey);
 
+        String uri = request.getRequestURI();
+        String contextPath = request.getContextPath();
+
+        if (uri.contains(".css") || uri.contains(".js") || uri.contains(".png")) {
+            getServletContext().getNamedDispatcher("default").forward(request, response);
+            return;
+        }
+
+        String path = uri.substring(contextPath.length())
+                .replaceAll(RegExp.NUMBER, "")
+                .replaceAll("/$", "");
+
+        String commandKey = getMethod(request) + ":" + path;
         Command command = commandHolder.getCommand(commandKey);
 
-        checkIfErrorIsPresent(request);
+        if (command == null) {
+            request.getRequestDispatcher("/WEB-INF/view/error/pageNotFound.jsp").forward(request, response);
+            return;
+        }
+
         executeCommand(request, response, command);
     }
 
-    private void executeCommand(HttpServletRequest request, HttpServletResponse response, Command command) throws IOException {
-        String error;
+    private void executeCommand(HttpServletRequest request, HttpServletResponse response, Command command)
+            throws ServletException, IOException {
         try {
             String path = command.execute(request, response);
-            logger.info(path);
-
             if (!isRedirected(path)) {
                 request.getRequestDispatcher(path).forward(request, response);
-            } else {
-                request.removeAttribute(AttributesHolder.ERROR_MESSAGE);
             }
-            return;
-
         } catch (ServiceException e) {
-            error = e.getMessage();
-            request.getSession().setAttribute(AttributesHolder.ERROR_MESSAGE, error);
-            logger.error("Service Exception: " + error, e);
+            logger.error("Service error: " + e.getMessage());
+            showError(request, response, e.getMessage());
         } catch (Exception e) {
-            error = ErrorsMessages.NOT_EXCEPTED_ERROR;
-            request.getSession().setAttribute(AttributesHolder.ERROR_MESSAGE, error);
-            logger.error("System Error", e);
+            logger.error("System error", e);
+            showError(request, response, ErrorsMessages.NOT_EXCEPTED_ERROR);
         }
+    }
 
-        String regex = "/" + RegExp.NUMBER;
-        response.sendRedirect(request.getRequestURI()
-                .replaceAll(regex, "")
-                .replaceAll("/delete", "") + "?" + AttributesHolder.ERROR_MESSAGE + "=" + error);
-        logger.error(error);
+    private void showError(HttpServletRequest request, HttpServletResponse response, String message)
+            throws ServletException, IOException {
+        request.setAttribute(AttributesHolder.ERROR_MESSAGE, message);
+        String uri = request.getRequestURI();
+        String forwardPath = uri.contains("book") ? PagesHolder.BOOK : PagesHolder.LIBRARY;
+        request.getRequestDispatcher(forwardPath).forward(request, response);
     }
 
     private void checkIfErrorIsPresent(HttpServletRequest request) {
@@ -88,10 +98,6 @@ public class FrontController extends HttpServlet {
         return REDIRECT.equals(path);
     }
 
-    private String getPath(HttpServletRequest request) {
-        String path = request.getRequestURI();
-        return path.replaceAll(RegExp.NUMBER, "");
-    }
 
     private String getMethod(HttpServletRequest request) {
         return request.getMethod().toUpperCase();

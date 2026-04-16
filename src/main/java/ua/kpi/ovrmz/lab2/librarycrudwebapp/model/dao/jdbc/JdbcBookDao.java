@@ -41,31 +41,6 @@ public class JdbcBookDao extends AbstractJdbcDao<Book> implements BookDao {
         super(connection);
     }
 
-    @Override
-    protected String getSelectAllQuery(){
-        return SELECT_FROM_BOOKS + ORDER_BY_ID;
-    }
-
-    @Override
-    protected String getCreateQuery(){
-        return INSERT_INTO_BOOKS;
-    }
-
-    @Override
-    protected String getUpdateQuery(){
-        return UPDATE_BOOKS + WHERE_ID;
-    }
-
-    @Override
-    protected String getDeleteQuery(){
-        return DELETE_BOOK_BY_ID + WHERE_ID;
-    }
-
-    @Override
-    protected Book getEntityFromResultSet(ResultSet resultSet) throws SQLException {
-        return getBookFromResultSet(resultSet);
-    }
-
     static Book getBookFromResultSet(ResultSet resultSet) throws SQLException {
         Library library = new Library.Builder()
                 .setId(resultSet.getInt(LIBRARY_ID))
@@ -79,6 +54,31 @@ public class JdbcBookDao extends AbstractJdbcDao<Book> implements BookDao {
                 .setAuthor(resultSet.getString(AUTHOR))
                 .setLibrary(library)
                 .build();
+    }
+
+    @Override
+    protected String getSelectAllQuery() {
+        return SELECT_FROM_BOOKS + ORDER_BY_ID;
+    }
+
+    @Override
+    protected String getCreateQuery() {
+        return INSERT_INTO_BOOKS;
+    }
+
+    @Override
+    protected String getUpdateQuery() {
+        return UPDATE_BOOKS + WHERE_ID;
+    }
+
+    @Override
+    protected String getDeleteQuery() {
+        return DELETE_BOOK_BY_ID + WHERE_ID;
+    }
+
+    @Override
+    protected Book getEntityFromResultSet(ResultSet resultSet) throws SQLException {
+        return getBookFromResultSet(resultSet);
     }
 
     @Override
@@ -107,9 +107,9 @@ public class JdbcBookDao extends AbstractJdbcDao<Book> implements BookDao {
     }
 
     @Override
-    public List<Book> findByTitleOrAuthorContaining(String searchString){
+    public List<Book> findByTitleOrAuthorContaining(String searchString) {
         List<Book> result = new ArrayList<>();
-        try (PreparedStatement query = connection.prepareStatement(SELECT_FROM_BOOKS + WHERE_TITLE_OR_AUTHOR_LIKE + ORDER_BY_ID)){
+        try (PreparedStatement query = connection.prepareStatement(SELECT_FROM_BOOKS + WHERE_TITLE_OR_AUTHOR_LIKE + ORDER_BY_ID)) {
             query.setString(1, "%" + searchString + "%");
             query.setString(2, "%" + searchString + "%");
 

@@ -7,7 +7,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public class JdbcDaoConnection implements DaoConnection {
-    private Connection connection;
+    private final Connection connection;
     private boolean inTransaction = false;
 
     public JdbcDaoConnection(Connection connection) {
@@ -23,6 +23,7 @@ public class JdbcDaoConnection implements DaoConnection {
             throw new DaoException(e);
         }
     }
+
     @Override
     public void commit() {
         try {
@@ -33,6 +34,7 @@ public class JdbcDaoConnection implements DaoConnection {
             throw new DaoException(e);
         }
     }
+
     @Override
     public void rollback() {
         try {
@@ -43,9 +45,10 @@ public class JdbcDaoConnection implements DaoConnection {
             throw new DaoException(e);
         }
     }
+
     @Override
     public void close() {
-        if(inTransaction) {
+        if (inTransaction) {
             rollback();
         }
         try {
@@ -54,6 +57,7 @@ public class JdbcDaoConnection implements DaoConnection {
             throw new DaoException(e);
         }
     }
+
     Connection getConnection() {
         return connection;
     }

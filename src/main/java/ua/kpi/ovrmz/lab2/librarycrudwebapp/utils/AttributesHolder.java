@@ -3,7 +3,7 @@ package ua.kpi.ovrmz.lab2.librarycrudwebapp.utils;
 public class AttributesHolder {
     public static final String NEW_MODE = "newMode";
     public static final String ERRORS = "errors";
-    public static final String ERROR_MESSAGE = "system error";
+    public static final String ERROR_MESSAGE = "system_error";
     public static final String SEARCH = "search";
 
     public static final String ID = "id";

@@ -34,18 +34,14 @@ public class EditLibrary implements Command {
 
     private Library buildLibrary(HttpServletRequest request) {
         Library library = new Library();
-        String path = request.getRequestURI();
 
-        try {
-            int id = Integer.parseInt(path.substring(path.lastIndexOf("/") + 1));
-            library.setId(id);
-            library.setName(request.getParameter(AttributesHolder.NAME));
-
-            int year = Integer.parseInt(request.getParameter(AttributesHolder.FOUNDATION_YEAR));
-            library.setFoundationYear(year);
-        } catch (NumberFormatException e) {
-            throw new ServiceException(ErrorsMessages.YEAR_INVALID);
+        String idStr = request.getParameter(AttributesHolder.ID);
+        if (idStr != null && !idStr.isEmpty()) {
+            library.setId(Integer.parseInt(idStr));
         }
+
+        library.setName(request.getParameter(AttributesHolder.NAME));
+        library.setFoundationYear(Integer.parseInt(request.getParameter(AttributesHolder.FOUNDATION_YEAR)));
 
         return library;
     }

@@ -35,20 +35,20 @@ public class EditBook implements Command {
 
     private Book buildBook(HttpServletRequest request) {
         Book book = new Book();
-        String path = request.getRequestURI();
 
-        try {
-            int id = Integer.parseInt(path.substring(path.lastIndexOf("/") + 1));
-            book.setId(id);
-            book.setTitle(request.getParameter(AttributesHolder.TITLE));
-            book.setAuthor(request.getParameter(AttributesHolder.AUTHOR));
+        String idParam = request.getParameter(AttributesHolder.ID);
+        if (idParam != null && !idParam.isEmpty()) {
+            book.setId(Integer.parseInt(idParam));
+        }
 
-            int libraryId = Integer.parseInt(request.getParameter(AttributesHolder.LIBRARY_ID));
+        book.setTitle(request.getParameter(AttributesHolder.TITLE));
+        book.setAuthor(request.getParameter(AttributesHolder.AUTHOR));
+
+        String libIdParam = request.getParameter(AttributesHolder.LIBRARY_ID);
+        if (libIdParam != null && !libIdParam.isEmpty()) {
             Library library = new Library();
-            library.setId(libraryId);
+            library.setId(Integer.parseInt(libIdParam));
             book.setLibrary(library);
-        } catch (NumberFormatException e) {
-            throw new ServiceException(ErrorsMessages.TITLE_INVALID);
         }
 
         return book;

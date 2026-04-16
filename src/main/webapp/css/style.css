@@ -1,0 +1,154 @@
+:root {
+    --bg-color: #0b0b0b;
+    --card-bg: #161616;
+    --text-primary: #ffffff;
+    --text-secondary: #a0a0a0;
+    --accent: #00ffff;
+    --accent-dim: rgba(0, 255, 255, 0.1);
+    --danger: #ff4d4d;
+    --font-main: 'Inter', 'Segoe UI', sans-serif;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    font-family: var(--font-main);
+    margin: 0;
+    line-height: 1.6;
+}
+
+nav {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 30px 0;
+    border-bottom: 1px solid #222;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: var(--text-secondary);
+    border: 1px solid #333;
+    padding: 10px 25px;
+    border-radius: 30px;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 0 15px var(--accent-dim);
+}
+
+.container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: var(--card-bg);
+    border-radius: 15px;
+    overflow: hidden;
+    table-layout: fixed;
+}
+
+th, td {
+    padding: 15px 20px;
+    text-align: left;
+    border-bottom: 1px solid #222;
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    vertical-align: top;
+}
+
+th {
+    color: var(--accent);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+table th:first-child, table td:first-child {
+    width: 20px;
+}
+
+table th:last-child, table td:last-child {
+    width: 180px;
+}
+
+.form-card {
+    background: var(--card-bg);
+    padding: 40px;
+    border-radius: 20px;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+input, select {
+    width: 100%;
+    background: #000;
+    border: 1px solid #333;
+    padding: 15px;
+    border-radius: 12px;
+    color: #fff;
+    margin: 10px 0 25px 0;
+    box-sizing: border-box;
+}
+
+input:focus {
+    border-color: var(--accent);
+    outline: none;
+}
+
+.btn {
+    cursor: pointer;
+    border-radius: 30px;
+    padding: 12px 25px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: 0.3s;
+    text-decoration: none;
+    display: inline-block;
+    border: 1px solid transparent;
+}
+
+.btn-primary {
+    background: var(--accent);
+    color: #000;
+}
+
+.btn-primary:hover {
+    background: #00cccc;
+    transform: translateY(-2px);
+}
+
+.btn-outline {
+    background: transparent;
+    border-color: #333;
+    color: #fff;
+}
+
+.btn-outline:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.btn-danger {
+    background: transparent;
+    border-color: var(--danger);
+    color: var(--danger);
+}
+
+.btn-danger:hover {
+    background: var(--danger);
+    color: #fff;
+}

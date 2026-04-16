@@ -13,11 +13,12 @@ import java.sql.SQLException;
 
 public class JdbcDaoFactory extends DaoFactory {
     private final DataSource dataSource;
+
     public JdbcDaoFactory() {
-        try{
+        try {
             InitialContext ic = new InitialContext();
             dataSource = (DataSource) ic.lookup("java:comp/env/jdbc/library_db");
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new DaoException(e);
         }
     }
