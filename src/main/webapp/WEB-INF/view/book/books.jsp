@@ -1,14 +1,15 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ page import="ua.kpi.ovrmz.lab2.librarycrudwebapp.utils.AttributesHolder" %>
 <html>
 <head><title>Books</title></head>
 <body>
 <%@include file="../header.jsp"%>
 <div class="container">
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h2 style="font-weight: 300;">Book <span style="color: var(--accent)">Collection</span></h2>
-        <form action="${pageContext.request.contextPath}/books" method="get" style="display: flex; gap: 10px;">
-            <input type="text" name="${AttributesHolder.SEARCH}" placeholder="Find book..." style="margin: 0; width: 200px; padding: 8px 15px;">
+    <div class="flex-between">
+        <h2 class="page-title">Book <span class="text-accent">Collection</span></h2>
+        <form action="${pageContext.request.contextPath}/books" method="get" class="search-form">
+            <input type="text" name="${AttributesHolder.SEARCH}" placeholder="Find book..." class="search-input" value="${requestScope[AttributesHolder.SEARCH]}">
             <button type="submit" class="btn btn-primary">Search</button>
         </form>
     </div>
@@ -16,23 +17,23 @@
     <table>
         <thead>
         <tr>
-            <th>ID</th>
+            <th class="col-id">ID</th>
             <th>Title</th>
             <th>Author</th>
             <th>Library</th>
-            <th>Actions</th>
+            <th class="col-actions">Actions</th>
         </tr>
         </thead>
         <tbody>
         <c:forEach var="book" items="${requestScope[AttributesHolder.BOOKS]}">
             <tr>
                 <td>${book.id}</td>
-                <td style="color: var(--accent); font-weight: 600;">${book.title}</td>
+                <td class="table-text-bold text-accent">${book.title}</td>
                 <td>${book.author}</td>
                 <td style="color: var(--text-secondary);">${book.library.name}</td>
-                <td style="display: flex; gap: 10px;">
+                <td class="actions-cell">
                     <a href="${pageContext.request.contextPath}/books/edit/${book.id}" class="btn btn-outline">Edit</a>
-                    <form action="${pageContext.request.contextPath}/books/delete/${book.id}" method="post" style="margin:0;">
+                    <form action="${pageContext.request.contextPath}/books/delete/${book.id}" method="post" class="margin-0">
                         <button class="btn btn-danger">Delete</button>
                     </form>
                 </td>
@@ -40,6 +41,15 @@
         </c:forEach>
         </tbody>
     </table>
+
+    <c:if test="${noOfPages > 1}">
+        <div class="pagination">
+            <c:forEach begin="1" end="${noOfPages}" var="i">
+                <a href="${pageContext.request.contextPath}/books?page=${i}&search=${requestScope[AttributesHolder.SEARCH]}"
+                   class="btn ${currentPage == i ? 'btn-primary' : 'btn-outline'}">${i}</a>
+            </c:forEach>
+        </div>
+    </c:if>
 </div>
 </body>
 </html>

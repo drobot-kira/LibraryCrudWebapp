@@ -109,6 +109,7 @@ public abstract class AbstractJdbcDao<E> implements GenericDao<E> {
         }
     }
 
+    @Override
     public long count() {
         try (PreparedStatement query = connection.prepareStatement(getCountQuery())) {
             ResultSet resultSet = query.executeQuery();
@@ -121,6 +122,7 @@ public abstract class AbstractJdbcDao<E> implements GenericDao<E> {
         }
     }
 
+    @Override
     public List<E> findAll(int limit, int offset) {
         List<E> result = new ArrayList<>();
         try (PreparedStatement query = connection.prepareStatement(getSelectAllPaginatedQuery())) {

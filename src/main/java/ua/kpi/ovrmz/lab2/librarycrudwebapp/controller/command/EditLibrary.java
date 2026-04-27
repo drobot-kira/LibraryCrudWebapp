@@ -1,12 +1,12 @@
 package ua.kpi.ovrmz.lab2.librarycrudwebapp.controller.command;
 
 import ua.kpi.ovrmz.lab2.librarycrudwebapp.controller.FrontController;
+import ua.kpi.ovrmz.lab2.librarycrudwebapp.controller.validator.Errors;
 import ua.kpi.ovrmz.lab2.librarycrudwebapp.controller.validator.LibraryValidator;
 import ua.kpi.ovrmz.lab2.librarycrudwebapp.model.entity.Library;
 import ua.kpi.ovrmz.lab2.librarycrudwebapp.model.service.LibraryService;
-import ua.kpi.ovrmz.lab2.librarycrudwebapp.model.service.exception.ServiceException;
 import ua.kpi.ovrmz.lab2.librarycrudwebapp.utils.AttributesHolder;
-import ua.kpi.ovrmz.lab2.librarycrudwebapp.utils.ErrorsMessages;
+import ua.kpi.ovrmz.lab2.librarycrudwebapp.utils.PagesHolder;
 import ua.kpi.ovrmz.lab2.librarycrudwebapp.utils.PathsHolder;
 
 import jakarta.servlet.ServletException;
@@ -21,9 +21,16 @@ public class EditLibrary implements Command {
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Library library = buildLibrary(request);
+        Errors errors = new Errors();
 
-        if (!libraryValidator.validate(library)) {
-            throw new ServiceException(ErrorsMessages.NAME_INVALID);
+        libraryValidator.validate(library, errors);
+
+        if (errors.hasError()) {
+            request.setAttribute(AttributesHolder.LIBRARY, library);
+            request.setAttribute(AttributesHolder.ERRORS, errors.getMessages());
+            request.setAttribute(AttributesHolder.NEW_MODE, false);
+
+            return PagesHolder.LIBRARY;
         }
 
         libraryService.update(library);
@@ -35,13 +42,20 @@ public class EditLibrary implements Command {
     private Library buildLibrary(HttpServletRequest request) {
         Library library = new Library();
 
-        String idStr = request.getParameter(AttributesHolder.ID);
-        if (idStr != null && !idStr.isEmpty()) {
-            library.setId(Integer.parseInt(idStr));
-        }
+        try {
+            String idStr = request.getParameter(AttributesHolder.ID);
+            if (idStr != null && !idStr.isEmpty()) {
+                library.setId(Integer.parseInt(idStr));
+            }
 
-        library.setName(request.getParameter(AttributesHolder.NAME));
-        library.setFoundationYear(Integer.parseInt(request.getParameter(AttributesHolder.FOUNDATION_YEAR)));
+            library.setName(request.getParameter(AttributesHolder.NAME));
+
+            String yearStr = request.getParameter(AttributesHolder.FOUNDATION_YEAR);
+            if (yearStr != null && !yearStr.trim().isEmpty()) {
+                library.setFoundationYear(Integer.parseInt(yearStr));
+            }
+        } catch (NumberFormatException e) {
+        }
 
         return library;
     }

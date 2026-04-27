@@ -48,6 +48,5 @@ public class BookValidator implements Validator<Book> {
 
     private void reject(Errors errors, String attribute, String message) {
         errors.addMessage(attribute, message);
-        errors.setResult(false);
     }
 }

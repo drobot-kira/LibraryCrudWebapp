@@ -10,8 +10,7 @@ import ua.kpi.ovrmz.lab2.librarycrudwebapp.utils.PagesHolder;
 import java.util.List;
 
 public class GetBooks implements Command {
-    private static final int MAX_ROWS = 20;
-
+    private static final int MAX_ROWS = 5;
     private final BookService bookService = BookService.getInstance();
 
     @Override
@@ -19,18 +18,33 @@ public class GetBooks implements Command {
         String searchQuery = request.getParameter(AttributesHolder.SEARCH);
         List<Book> books;
 
+        int page = 1;
+        String pageParam = request.getParameter("page");
+        if (pageParam != null && !pageParam.isEmpty()) {
+            try {
+                page = Integer.parseInt(pageParam);
+            } catch (NumberFormatException e) {
+                page = 1;
+            }
+        }
+
+        int offset = (page - 1) * MAX_ROWS;
+
         if (searchQuery != null && !searchQuery.trim().isEmpty()) {
             books = bookService.findByTitleOrAuthorContaining(searchQuery);
 
-            if (books.size() > MAX_ROWS) {
-                books = books.subList(0, MAX_ROWS);
-            }
+            request.setAttribute("noOfPages", 1);
         } else {
-            books = bookService.findAll(MAX_ROWS, 0);
+            books = bookService.findAll(MAX_ROWS, offset);
+
+            long totalRecords = bookService.count();
+            int noOfPages = (int) Math.ceil((double) totalRecords / MAX_ROWS);
+            request.setAttribute("noOfPages", noOfPages);
         }
 
         request.setAttribute(AttributesHolder.BOOKS, books);
         request.setAttribute(AttributesHolder.SEARCH, searchQuery);
+        request.setAttribute("currentPage", page);
 
         return PagesHolder.BOOKS;
     }

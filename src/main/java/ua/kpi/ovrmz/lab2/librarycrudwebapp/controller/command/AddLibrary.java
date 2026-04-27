@@ -1,12 +1,12 @@
 package ua.kpi.ovrmz.lab2.librarycrudwebapp.controller.command;
 
 import ua.kpi.ovrmz.lab2.librarycrudwebapp.controller.FrontController;
+import ua.kpi.ovrmz.lab2.librarycrudwebapp.controller.validator.Errors;
 import ua.kpi.ovrmz.lab2.librarycrudwebapp.controller.validator.LibraryValidator;
 import ua.kpi.ovrmz.lab2.librarycrudwebapp.model.entity.Library;
 import ua.kpi.ovrmz.lab2.librarycrudwebapp.model.service.LibraryService;
-import ua.kpi.ovrmz.lab2.librarycrudwebapp.model.service.exception.ServiceException;
 import ua.kpi.ovrmz.lab2.librarycrudwebapp.utils.AttributesHolder;
-import ua.kpi.ovrmz.lab2.librarycrudwebapp.utils.ErrorsMessages;
+import ua.kpi.ovrmz.lab2.librarycrudwebapp.utils.PagesHolder;
 import ua.kpi.ovrmz.lab2.librarycrudwebapp.utils.PathsHolder;
 
 import jakarta.servlet.ServletException;
@@ -21,9 +21,16 @@ public class AddLibrary implements Command {
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Library library = buildLibrary(request);
+        Errors errors = new Errors();
 
-        if (!libraryValidator.validate(library)) {
-            throw new ServiceException(ErrorsMessages.NAME_INVALID);
+        libraryValidator.validate(library, errors);
+
+        if (errors.hasError()) {
+            request.setAttribute(AttributesHolder.LIBRARY, library);
+            request.setAttribute(AttributesHolder.ERRORS, errors.getMessages());
+            request.setAttribute(AttributesHolder.NEW_MODE, true);
+
+            return PagesHolder.LIBRARY;
         }
 
         libraryService.create(library);
@@ -37,10 +44,12 @@ public class AddLibrary implements Command {
         library.setName(request.getParameter(AttributesHolder.NAME));
 
         try {
-            int year = Integer.parseInt(request.getParameter(AttributesHolder.FOUNDATION_YEAR));
-            library.setFoundationYear(year);
+            String yearParam = request.getParameter(AttributesHolder.FOUNDATION_YEAR);
+            if (yearParam != null && !yearParam.trim().isEmpty()) {
+                int year = Integer.parseInt(yearParam);
+                library.setFoundationYear(year);
+            }
         } catch (NumberFormatException e) {
-            throw new ServiceException(ErrorsMessages.YEAR_INVALID);
         }
 
         return library;

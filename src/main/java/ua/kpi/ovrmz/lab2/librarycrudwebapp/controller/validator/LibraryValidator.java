@@ -41,6 +41,5 @@ public class LibraryValidator implements Validator<Library> {
 
     private void reject(Errors errors, String attribute, String message) {
         errors.addMessage(attribute, message);
-        errors.setResult(false);
     }
 }

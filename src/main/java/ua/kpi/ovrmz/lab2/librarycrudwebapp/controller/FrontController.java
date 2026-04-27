@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import ua.kpi.ovrmz.lab2.librarycrudwebapp.controller.command.Command;
 import ua.kpi.ovrmz.lab2.librarycrudwebapp.controller.validator.RegExp;
+import ua.kpi.ovrmz.lab2.librarycrudwebapp.exception.ApplicationException;
 import ua.kpi.ovrmz.lab2.librarycrudwebapp.model.service.exception.ServiceException;
 import ua.kpi.ovrmz.lab2.librarycrudwebapp.utils.AttributesHolder;
 import ua.kpi.ovrmz.lab2.librarycrudwebapp.utils.ErrorsMessages;
@@ -45,7 +46,7 @@ public class FrontController extends HttpServlet {
         String uri = request.getRequestURI();
         String contextPath = request.getContextPath();
 
-        if (uri.contains(".css") || uri.contains(".js") || uri.contains(".png")) {
+        if (uri.contains(".css")){
             getServletContext().getNamedDispatcher("default").forward(request, response);
             return;
         }
@@ -72,9 +73,9 @@ public class FrontController extends HttpServlet {
             if (!isRedirected(path)) {
                 request.getRequestDispatcher(path).forward(request, response);
             }
-        } catch (ServiceException e) {
-            logger.error("Service error: " + e.getMessage());
-            showError(request, response, e.getMessage());
+        } catch (ApplicationException e) {
+            logger.error("Application error: " + e.getMessageKey(), e);
+            showError(request, response, e.getMessageKey());
         } catch (Exception e) {
             logger.error("System error", e);
             showError(request, response, ErrorsMessages.NOT_EXCEPTED_ERROR);
@@ -89,10 +90,6 @@ public class FrontController extends HttpServlet {
         request.getRequestDispatcher(forwardPath).forward(request, response);
     }
 
-    private void checkIfErrorIsPresent(HttpServletRequest request) {
-        request.setAttribute(AttributesHolder.ERROR_MESSAGE,
-                request.getParameter(AttributesHolder.ERROR_MESSAGE));
-    }
 
     private boolean isRedirected(String path) {
         return REDIRECT.equals(path);

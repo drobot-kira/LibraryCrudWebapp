@@ -5,7 +5,6 @@ import java.util.Map;
 
 public class Errors {
     private final Map<String, String> messages = new HashMap<>();
-    private boolean result = true;
 
     public void addMessage(String attribute, String message) {
         messages.put(attribute, message);
@@ -15,15 +14,7 @@ public class Errors {
         return messages;
     }
 
-    public boolean hasError(){
-        return !result;
-    }
-
-    public void setResult(boolean result) {
-        this.result = result;
-    }
-
-    public boolean getResult() {
-        return result;
+    public boolean hasError() {
+        return !messages.isEmpty();
     }
 }
